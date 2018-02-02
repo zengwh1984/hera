@@ -35,6 +35,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
 import android.view.Window;
 import android.widget.FrameLayout;
+import android.widget.Toast;
 
 import com.weidian.lib.hera.R;
 import com.weidian.lib.hera.api.ApiManager;
@@ -57,12 +58,16 @@ public class HeraActivity extends AppCompatActivity implements OnEventListener {
     public static final String APP_ID = "app_id";
     public static final String USER_ID = "user_id";
     public static final String APP_PATH = "app_path";
+    //是否为主应用
+    public static final String APP_MAIN = "app_main";
 
     private FrameLayout mContainer;
     private AppConfig mAppConfig;
     private ApiManager mApiManager;
     private AppService mAppService;
     private PageManager mPageManager;
+
+    private long mExitTime;
 
     private LoadingIndicator mLoadingIndicator;
 
@@ -78,6 +83,7 @@ public class HeraActivity extends AppCompatActivity implements OnEventListener {
         String appId = intent.getStringExtra(APP_ID);
         String userId = intent.getStringExtra(USER_ID);
         String appPath = intent.getStringExtra(APP_PATH);
+        boolean appMain = intent.getBooleanExtra(APP_MAIN,false);
         if (TextUtils.isEmpty(appId)) {
             throw new IllegalArgumentException("Intent has not extra 'app_id', " +
                     "start HeraActivity failed!");
@@ -90,7 +96,7 @@ public class HeraActivity extends AppCompatActivity implements OnEventListener {
 
         //2. 创建AppConfig，将appId和userId缓存，在整个小程序运行期内有效
         mAppConfig = new AppConfig(appId, userId);
-
+        mAppConfig.setAppMain(appMain);
         //3. 创建ApiManager，管理Api的调用
         mApiManager = new ApiManager(this, this, mAppConfig);
 
@@ -155,6 +161,16 @@ public class HeraActivity extends AppCompatActivity implements OnEventListener {
     @Override
     public void onBackPressed() {
         if (mPageManager != null && mPageManager.backPage()) {
+            return;
+        }
+        if(mAppConfig.isAppMain()){
+            if ((System.currentTimeMillis() - mExitTime) > 2000) {
+                Toast.makeText(HeraActivity.this, "再按一次退出应用", Toast.LENGTH_SHORT).show();
+                mExitTime = System.currentTimeMillis();
+            } else {
+                finish();
+                System.exit(0);
+            }
             return;
         }
         super.onBackPressed();

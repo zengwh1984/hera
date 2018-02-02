@@ -101,6 +101,26 @@ public class HeraService extends Service {
         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         context.startActivity(intent);
     }
+    /**
+     * 启动Hera主页面
+     *
+     * @param context
+     * @param appId
+     * @param userId
+     * @param appPath
+     */
+    public static void launchMain(Context context, String userId, String appId, String appPath) {
+        if (context == null || TextUtils.isEmpty(appId) || TextUtils.isEmpty(userId)) {
+            throw new IllegalArgumentException("context, appId and userId are not null");
+        }
+
+        Intent intent = new Intent(context, HeraActivity.class);
+        intent.putExtra(HeraActivity.APP_ID, appId);
+        intent.putExtra(HeraActivity.USER_ID, userId);
+        intent.putExtra(HeraActivity.APP_PATH, appPath);
+        intent.putExtra(HeraActivity.APP_MAIN,true);
+        context.startActivity(intent);
+    }
 
     /**
      * 初始化解压framework到指定目录，虽版本升级进行更新的策略

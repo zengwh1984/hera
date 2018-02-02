@@ -1,6 +1,7 @@
 package com.weidian.lib.hera.sample;
 
 import android.app.Application;
+import android.view.View;
 
 import com.weidian.lib.hera.config.HeraConfig;
 import com.weidian.lib.hera.main.HeraService;

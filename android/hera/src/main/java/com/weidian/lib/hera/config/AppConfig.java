@@ -58,6 +58,8 @@ public class AppConfig {
     private String mUserId;
     private String mAppId;
 
+    private boolean appMain = false;
+
     /**
      * 获取宿主版本号
      *
@@ -389,4 +391,11 @@ public class AppConfig {
         JSONArray list; //tab 的列表，详见 list 属性说明，最少2个、最多5个 tab
     }
 
+    public boolean isAppMain() {
+        return appMain;
+    }
+
+    public void setAppMain(boolean appMain) {
+        this.appMain = appMain;
+    }
 }

@@ -107,11 +107,9 @@ public class Page extends LinearLayout implements IBridgeHandler,
         mWebLayout = (FrameLayout) findViewById(R.id.web_layout);
         mToastView = (ToastView) findViewById(R.id.toast_view);
         mNavigationBar = new NavigationBar(context);
-
         //添加导航栏
         topLayout.addView(mNavigationBar, new LayoutParams(LayoutParams.MATCH_PARENT,
                 mNavigationBar.getMaximumHeight()));
-
         if (mAppConfig.isTabPage(url)) {
             initTabPage(context, topLayout, bottomLayout);
         } else {
@@ -426,7 +424,6 @@ public class Page extends LinearLayout implements IBridgeHandler,
         if (TextUtils.isEmpty(url) || mCurrentWebView == null) {
             return;
         }
-
         mPagePath = url;
         mPageOpenType = openType;
 
@@ -444,9 +441,12 @@ public class Page extends LinearLayout implements IBridgeHandler,
         HeraTrace.d(TAG, "Page file path :" + path);
 
         //更新导航栏返回按钮和标题
-        mNavigationBar.disableNavigationBack(mAppConfig.isDisableNavigationBack(url));
         mNavigationBar.setTitle(mAppConfig.getPageTitle(url));
-
+        if(mAppConfig.isAppMain() && mAppConfig.isTabPage(url)){
+            mNavigationBar.disableNavigationBack(true);
+        }else{
+            mNavigationBar.disableNavigationBack(mAppConfig.isDisableNavigationBack(url));
+        }
         //设置下拉刷新启用状态
         SwipeRefreshLayout refreshLayout = getSwipeRefreshLayout();
         if (refreshLayout != null) {

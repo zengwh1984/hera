@@ -29,6 +29,8 @@ package com.weidian.lib.hera.sync;
 
 import android.content.Context;
 import android.os.AsyncTask;
+import android.os.Handler;
+import android.os.Looper;
 import android.text.TextUtils;
 
 import com.weidian.lib.hera.trace.HeraTrace;
@@ -44,6 +46,7 @@ import java.io.InputStream;
  */
 public class HeraAppManager {
 
+    protected static final Handler HANDLER = new Handler(Looper.getMainLooper());
     private static final String TAG = "HeraAppManager";
 
     private HeraAppManager() {
@@ -57,11 +60,18 @@ public class HeraAppManager {
      * @param appPath  本地的小程序路径
      * @param callback 回调接口
      */
-    public static void syncMiniApp(Context context, String appId, String appPath, SyncCallback callback) {
-        new SyncMiniAppTask(context, callback)
-                .executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, appId, appPath);
+    public static void syncMiniApp(final Context context, final String appId, String appPath,final SyncCallback callback) {
+        HeraTrace.d(TAG, "检测小程序:"+appId);
+        CheckMiniAppTask.CheckCallback checkCallback = new CheckMiniAppTask.CheckCallback() {
+            @Override
+            public void onResult(String newAppPath) {
+                //解压小程序
+                new SyncMiniAppTask(context, callback)
+                        .executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, appId, newAppPath);
+            }
+        };
+        new CheckMiniAppTask(context,checkCallback).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, appId, appPath);
     }
-
     /**
      * 小程序的解压任务类
      */
@@ -100,7 +110,6 @@ public class HeraAppManager {
                     HeraTrace.e(TAG, e.getMessage());
                 }
             }
-
             return unzipResult && new File(outputPath, "service.html").exists();
         }
 

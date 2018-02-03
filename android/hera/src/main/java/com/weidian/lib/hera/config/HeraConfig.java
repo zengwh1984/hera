@@ -35,6 +35,7 @@ import com.weidian.lib.hera.remote.IHostApiDispatcher;
 public class HeraConfig {
 
     public static final String VERSION = "1.0.0";
+    public static final String APP_SERVICE_URI = "http://192.168.1.100:9130";
 
     private IHostApiDispatcher mDispatcher;
     private boolean mDebug;

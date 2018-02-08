@@ -12,15 +12,17 @@
     "build:dev": "webpack --progress",
     "dev": "WATCH=true webpack --config webpack.config.js --progress",
     "precommit": "lint-staged",
-    "format":
-      "prettier-standard './*.js' && prettier-standard 'src/**/*.js' && prettier-standard 'lib/**/*.js'"
+    "format": "prettier-standard './*.js' && prettier-standard 'src/**/*.js' && prettier-standard 'lib/**/*.js'"
   },
   "repository": {
     "type": "git",
     "url": "https://github.com/weidian-inc/hera.git"
   },
   "lint-staged": {
-    "{*.js,*weweb,*.json}": ["prettier-standard", "git add"]
+    "{*.js,*weweb,*.json}": [
+      "prettier-standard",
+      "git add"
+    ]
   },
   "dependencies": {
     "archiver": "^2.1.0",
